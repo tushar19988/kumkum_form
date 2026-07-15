@@ -159,11 +159,14 @@ const AdminDashboard = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-3 w-full sm:w-auto">
-            <ThemeToggle />
+          <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
+            {/* Theme toggle: desktop/tablet only, hidden on mobile */}
+            <div className="hidden sm:block">
+              <ThemeToggle />
+            </div>
             <button
               onClick={handleExportExcel}
-              className="flex items-center gap-2 bg-brand-pink text-white px-4 py-2.5 rounded-xl hover:bg-brand-pink/90 active:scale-95 transition-all font-medium text-sm shadow-sm shadow-brand-pink/30"
+              className="flex items-center justify-center gap-2 bg-brand-pink text-white px-3.5 sm:px-4 py-2.5 rounded-xl hover:bg-brand-pink/90 active:scale-95 transition-all font-medium text-sm shadow-sm shadow-brand-pink/30 flex-1 sm:flex-none"
             >
               <Download size={16} />
               <span className="hidden sm:inline">Export Excel</span>
@@ -171,7 +174,7 @@ const AdminDashboard = () => {
             </button>
             <button
               onClick={handleLogout}
-              className="flex items-center gap-2 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-4 py-2.5 rounded-xl hover:bg-slate-300 dark:hover:bg-slate-700 active:scale-95 transition-all font-medium text-sm"
+              className="flex items-center justify-center gap-2 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-3.5 sm:px-4 py-2.5 rounded-xl hover:bg-slate-300 dark:hover:bg-slate-700 active:scale-95 transition-all font-medium text-sm flex-1 sm:flex-none"
             >
               <LogOut size={16} />
               <span>Logout</span>
@@ -205,9 +208,9 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        {/* Table card */}
+        {/* Table / cards card */}
         <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-700 overflow-hidden">
-          <div className="p-6 border-b border-slate-100 dark:border-slate-700">
+          <div className="p-4 sm:p-6 border-b border-slate-100 dark:border-slate-700">
             <div className="flex flex-col sm:flex-row gap-3">
               <div className="relative flex-1 max-w-md">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
@@ -264,76 +267,133 @@ const AdminDashboard = () => {
             </div>
           </div>
 
-          <div className="overflow-x-auto">
-            {loading ? (
-              <div className="p-10 flex flex-col items-center justify-center gap-3 text-slate-500 dark:text-slate-400">
-                <div className="h-8 w-8 border-2 border-brand-pink border-t-transparent rounded-full animate-spin" />
-                <span className="text-sm">Loading records...</span>
+          {loading ? (
+            <div className="p-10 flex flex-col items-center justify-center gap-3 text-slate-500 dark:text-slate-400">
+              <div className="h-8 w-8 border-2 border-brand-pink border-t-transparent rounded-full animate-spin" />
+              <span className="text-sm">Loading records...</span>
+            </div>
+          ) : filteredData.length === 0 ? (
+            <div className="p-12 flex flex-col items-center justify-center gap-2 text-center">
+              <div className="h-12 w-12 rounded-full bg-slate-100 dark:bg-slate-700/50 flex items-center justify-center mb-1">
+                <Search className="h-5 w-5 text-slate-400" />
               </div>
-            ) : filteredData.length === 0 ? (
-              <div className="p-12 flex flex-col items-center justify-center gap-2 text-center">
-                <div className="h-12 w-12 rounded-full bg-slate-100 dark:bg-slate-700/50 flex items-center justify-center mb-1">
-                  <Search className="h-5 w-5 text-slate-400" />
-                </div>
-                <p className="text-slate-600 dark:text-slate-300 font-medium">No records found</p>
-                <p className="text-sm text-slate-400 dark:text-slate-500">
-                  {searchTerm || dateFilter
-                    ? 'Try a different mobile number or date'
-                    : 'Registrations will appear here'}
-                </p>
-              </div>
-            ) : (
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="bg-slate-50 dark:bg-slate-900/50 text-slate-500 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">
-                    <th className="p-4 px-6">Name</th>
-                    <th className="p-4 px-6">Mobile Number</th>
-                    <th className="p-4 px-6">Parlour Name</th>
-                    <th className="p-4 px-6">City</th>
-                    <th className="p-4 px-6">Date & Time</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50">
-                  {filteredData.map((record) => {
-                    const { date, time } = formatDateTime(record.timestamp);
-                    return (
-                      <tr key={record.id} className="hover:bg-slate-50/60 dark:hover:bg-slate-700/20 transition-colors">
-                        <td className="p-4 px-6">
-                          <div className="flex items-center gap-3">
-                            <div className="h-9 w-9 rounded-full bg-brand-pink/10 text-brand-pink flex items-center justify-center text-sm font-semibold shrink-0">
-                              {getInitial(record.name)}
+              <p className="text-slate-600 dark:text-slate-300 font-medium">No records found</p>
+              <p className="text-sm text-slate-400 dark:text-slate-500">
+                {searchTerm || dateFilter
+                  ? 'Try a different mobile number or date'
+                  : 'Registrations will appear here'}
+              </p>
+            </div>
+          ) : (
+            <>
+              {/* Desktop / tablet: table view (sm and up) */}
+              <div className="hidden sm:block overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="bg-slate-50 dark:bg-slate-900/50 text-slate-500 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">
+                      <th className="p-4 px-6">Name</th>
+                      <th className="p-4 px-6">Mobile Number</th>
+                      <th className="p-4 px-6">Parlour Name</th>
+                      <th className="p-4 px-6">City</th>
+                      <th className="p-4 px-6">Date & Time</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50">
+                    {filteredData.map((record) => {
+                      const { date, time } = formatDateTime(record.timestamp);
+                      return (
+                        <tr key={record.id} className="hover:bg-slate-50/60 dark:hover:bg-slate-700/20 transition-colors">
+                          <td className="p-4 px-6">
+                            <div className="flex items-center gap-3">
+                              <div className="h-9 w-9 rounded-full bg-brand-pink/10 text-brand-pink flex items-center justify-center text-sm font-semibold shrink-0">
+                                {getInitial(record.name)}
+                              </div>
+                              <span className="text-slate-800 dark:text-slate-200 font-medium">
+                                {record.name}
+                              </span>
                             </div>
-                            <span className="text-slate-800 dark:text-slate-200 font-medium">
-                              {record.name}
+                          </td>
+                          <td className="p-4 px-6 text-slate-600 dark:text-slate-400 whitespace-nowrap">
+                            {record.mobile}
+                          </td>
+                          <td className="p-4 px-6 max-w-[140px] sm:max-w-[200px] md:max-w-[260px] lg:max-w-[340px] align-top">
+                            <span className="inline-block max-w-full px-3 py-1.5 rounded-lg text-sm font-medium bg-brand-pink/10 text-brand-pink whitespace-normal break-words leading-relaxed">
+                              {record.parlour}
                             </span>
+                          </td>
+                          <td className="p-4 px-6 text-slate-600 dark:text-slate-400">
+                            {record.city}
+                          </td>
+                          <td className="p-4 px-6">
+                            <div className="text-sm text-slate-700 dark:text-slate-300 font-medium whitespace-nowrap">
+                              {date}
+                            </div>
+                            <div className="text-xs text-slate-400 dark:text-slate-500 whitespace-nowrap">
+                              {time}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile: card view (below sm) */}
+              <div className="sm:hidden divide-y divide-slate-100 dark:divide-slate-700/50">
+                {filteredData.map((record) => {
+                  const { date, time } = formatDateTime(record.timestamp);
+                  return (
+                    <div
+                      key={record.id}
+                      className="p-4 active:bg-slate-50 dark:active:bg-slate-700/20 transition-colors"
+                    >
+                      <div className="flex items-start justify-between gap-2 min-w-0">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="h-10 w-10 rounded-full bg-brand-pink/10 text-brand-pink flex items-center justify-center text-sm font-semibold shrink-0">
+                            {getInitial(record.name)}
                           </div>
-                        </td>
-                        <td className="p-4 px-6 text-slate-600 dark:text-slate-400 whitespace-nowrap">
-                          {record.mobile}
-                        </td>
-                        <td className="p-4 px-6 max-w-[140px] sm:max-w-[200px] md:max-w-[260px] lg:max-w-[340px] align-top">
-                          <span className="inline-block max-w-full px-3 py-1.5 rounded-lg text-sm font-medium bg-brand-pink/10 text-brand-pink whitespace-normal break-words leading-relaxed">
-                            {record.parlour}
-                          </span>
-                        </td>
-                        <td className="p-4 px-6 text-slate-600 dark:text-slate-400">
-                          {record.city}
-                        </td>
-                        <td className="p-4 px-6">
-                          <div className="text-sm text-slate-700 dark:text-slate-300 font-medium whitespace-nowrap">
+                          <div className="min-w-0">
+                            <p className="text-slate-800 dark:text-slate-200 font-semibold text-sm truncate">
+                              {record.name}
+                            </p>
+                            <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5">
+                              {record.mobile}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="text-right shrink-0">
+                          <div className="text-xs font-medium text-slate-700 dark:text-slate-300 whitespace-nowrap">
                             {date}
                           </div>
-                          <div className="text-xs text-slate-400 dark:text-slate-500 whitespace-nowrap">
+                          <div className="text-[11px] text-slate-400 dark:text-slate-500 whitespace-nowrap">
                             {time}
                           </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            )}
-          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col gap-2 mt-3 pl-[52px] min-w-0">
+                        {record.parlour && (
+                          <div className="min-w-0">
+                            <span className="inline-block max-w-full w-fit px-2.5 py-1.5 rounded-lg text-xs font-medium bg-brand-pink/10 text-brand-pink break-all leading-relaxed">
+                              {record.parlour}
+                            </span>
+                          </div>
+                        )}
+                        {record.city && (
+                          <div className="min-w-0">
+                            <span className="inline-block max-w-full w-fit px-2.5 py-1.5 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300 break-words">
+                              {record.city}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>
