@@ -4,7 +4,6 @@ import { User, Phone, MapPin, Building2 } from 'lucide-react';
 import InputField from './InputField';
 import SubmitButton from './SubmitButton';
 import BeautyLogo from './BeautyLogo';
-import { generateWhatsAppLink } from '../utils/whatsapp';
 
 const FormCard = () => {
   const [formData, setFormData] = useState({
@@ -31,14 +30,10 @@ const FormCard = () => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate slight delay for animation before redirect
+    // As per request, do nothing on submit for now
     setTimeout(() => {
-      const link = generateWhatsAppLink(formData);
-      window.location.href = link;
-      
-      // Reset state in case they navigate back
-      setTimeout(() => setIsSubmitting(false), 1000);
-    }, 800);
+      setIsSubmitting(false);
+    }, 1000);
   };
 
   return (
