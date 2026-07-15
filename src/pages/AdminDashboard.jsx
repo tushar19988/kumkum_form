@@ -4,7 +4,7 @@ import { db, auth } from '../utils/firebase';
 import { signOut } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { Search, LogOut, FileText, X, Users, Calendar, Download, CalendarDays } from 'lucide-react';
-import ThemeToggle from '../components/ThemeToggle';
+
 import toast from 'react-hot-toast';
 
 
@@ -169,10 +169,7 @@ const AdminDashboard = () => {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
-            {/* Theme toggle: desktop/tablet only, hidden on mobile */}
-            <div className="hidden sm:block">
-              <ThemeToggle />
-            </div>
+
             <button
               onClick={handleExportExcel}
               className="flex items-center justify-center gap-2 bg-brand-pink text-white px-3.5 sm:px-4 py-2.5 rounded-xl hover:bg-brand-pink/90 active:scale-95 transition-all font-medium text-sm shadow-sm shadow-brand-pink/30 flex-1 sm:flex-none"

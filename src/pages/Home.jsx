@@ -1,13 +1,13 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import AnimatedBackground from '../components/AnimatedBackground';
-import ThemeToggle from '../components/ThemeToggle';
+
 import FormCard from '../components/FormCard';
 
 const Home = () => {
   return (
     <div className="relative min-h-screen w-full overflow-hidden flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <ThemeToggle />
+
       <AnimatedBackground />
       
       <div className="w-full max-w-4xl mx-auto z-10 flex flex-col items-center">

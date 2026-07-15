@@ -12,16 +12,6 @@
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
     </noscript>
     <title>Kumkum Beauty Care</title>
-    <!-- Initialize theme from localStorage before body renders to avoid flashing -->
-    <script>
-      try {
-        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-          document.documentElement.classList.add('dark');
-        } else {
-          document.documentElement.classList.remove('dark');
-        }
-      } catch (_) {}
-    </script>
   </head>
   <body>
     <style>
@@ -52,13 +42,15 @@
       @keyframes spin {
         to { transform: rotate(360deg); }
       }
-      html.dark body { 
-        background-color: #0f172a; 
-        background-image: radial-gradient(ellipse at top, rgba(244, 114, 182, 0.15), #0f172a, #0f172a);
-      }
-      html.dark .spinner {
-        border: 4px solid rgba(244, 114, 182, 0.1);
-        border-top-color: #f472b6;
+      @media (prefers-color-scheme: dark) {
+        body { 
+          background-color: #0f172a; 
+          background-image: radial-gradient(ellipse at top, rgba(244, 114, 182, 0.15), #0f172a, #0f172a);
+        }
+        .spinner {
+          border: 4px solid rgba(244, 114, 182, 0.1);
+          border-top-color: #f472b6;
+        }
       }
     </style>
     <div id="root">

@@ -6,7 +6,7 @@ import { auth } from '../utils/firebase';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import BeautyLogo from '../components/BeautyLogo';
-import ThemeToggle from '../components/ThemeToggle';
+
 import AnimatedBackground from '../components/AnimatedBackground';
 
 const AdminLogin = () => {
@@ -34,7 +34,7 @@ const AdminLogin = () => {
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <ThemeToggle />
+
       <AnimatedBackground />
 
       <motion.div
