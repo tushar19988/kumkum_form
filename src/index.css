@@ -33,3 +33,38 @@
 .glass-panel {
   @apply bg-white/70 dark:bg-slate-800/70 backdrop-blur-md border border-white/20 shadow-xl;
 }
+
+/* Background blob animations for high performance */
+@keyframes float {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+}
+@keyframes float-reverse {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  33% {
+    transform: translate(-30px, 50px) scale(1.1);
+  }
+  66% {
+    transform: translate(20px, -20px) scale(0.9);
+  }
+}
+
+.animate-float {
+  animation: float 20s ease-in-out infinite;
+}
+.animate-float-reverse {
+  animation: float-reverse 25s ease-in-out infinite;
+}
+.animate-float-delayed {
+  animation: float 22s ease-in-out infinite;
+  animation-delay: -5s;
+}
