@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { Search, LogOut, FileText, X, Users, Calendar, Download, CalendarDays } from 'lucide-react';
 import ThemeToggle from '../components/ThemeToggle';
 import toast from 'react-hot-toast';
-import * as XLSX from 'xlsx';
+
 
 const AdminDashboard = () => {
   const [data, setData] = useState([]);
@@ -101,41 +101,50 @@ const AdminDashboard = () => {
   const getInitial = (name) => (name ? name.trim().charAt(0).toUpperCase() : '?');
 
   // Exports the currently filtered records to a downloadable Excel (.xlsx) file
-  const handleExportExcel = () => {
+  const handleExportExcel = async () => {
     if (filteredData.length === 0) {
       toast.error('No records to export');
       return;
     }
+    
+    const toastId = toast.loading('Preparing Excel file...');
+    try {
+      // Dynamically import xlsx so it doesn't block initial page load (fixes Mobile PageSpeed 0 score)
+      const XLSX = await import('xlsx');
 
-    const rows = filteredData.map((record) => {
-      const { date, time } = formatDateTime(record.timestamp);
-      return {
-        Name: record.name || '',
-        'Mobile Number': record.mobile || '',
-        'Parlour Name': record.parlour || '',
-        City: record.city || '',
-        Date: date,
-        Time: time,
-      };
-    });
+      const rows = filteredData.map((record) => {
+        const { date, time } = formatDateTime(record.timestamp);
+        return {
+          Name: record.name || '',
+          'Mobile Number': record.mobile || '',
+          'Parlour Name': record.parlour || '',
+          City: record.city || '',
+          Date: date,
+          Time: time,
+        };
+      });
 
-    const worksheet = XLSX.utils.json_to_sheet(rows);
-    // Reasonable column widths so the sheet is readable out of the box
-    worksheet['!cols'] = [
-      { wch: 22 }, // Name
-      { wch: 16 }, // Mobile Number
-      { wch: 30 }, // Parlour Name
-      { wch: 18 }, // City
-      { wch: 14 }, // Date
-      { wch: 12 }, // Time
-    ];
+      const worksheet = XLSX.utils.json_to_sheet(rows);
+      // Reasonable column widths so the sheet is readable out of the box
+      worksheet['!cols'] = [
+        { wch: 22 }, // Name
+        { wch: 16 }, // Mobile Number
+        { wch: 30 }, // Parlour Name
+        { wch: 18 }, // City
+        { wch: 14 }, // Date
+        { wch: 12 }, // Time
+      ];
 
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Registrations');
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Registrations');
 
-    const fileDate = new Date().toISOString().slice(0, 10);
-    XLSX.writeFile(workbook, `Registrations_${fileDate}.xlsx`);
-    toast.success('Excel file downloaded');
+      const fileDate = new Date().toISOString().slice(0, 10);
+      XLSX.writeFile(workbook, `Registrations_${fileDate}.xlsx`);
+      toast.success('Excel file downloaded', { id: toastId });
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to create Excel file', { id: toastId });
+    }
   };
 
   return (
