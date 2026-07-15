@@ -1,5 +1,5 @@
 export const generateWhatsAppLink = (formData) => {
-  const targetNumber = '919727900542'; // The owner's WhatsApp number
+  const targetNumber = '919054061461'; // The owner's WhatsApp number
 
   const message = `*KUMKUM BEAUTY CARE*
 
