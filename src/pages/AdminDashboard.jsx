@@ -3,13 +3,15 @@ import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { db, auth } from '../utils/firebase';
 import { signOut } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-import { Search, LogOut, FileText, X, Users, Calendar } from 'lucide-react';
+import { Search, LogOut, FileText, X, Users, Calendar, Download, CalendarDays } from 'lucide-react';
 import ThemeToggle from '../components/ThemeToggle';
 import toast from 'react-hot-toast';
+import * as XLSX from 'xlsx';
 
 const AdminDashboard = () => {
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [dateFilter, setDateFilter] = useState('');
   const [loading, setLoading] = useState(true);
   const [userName, setUserName] = useState('');
   const navigate = useNavigate();
@@ -81,12 +83,60 @@ const AdminDashboard = () => {
     return { date, time };
   };
 
-  const filteredData = data.filter((item) =>
-    item.mobile.includes(searchTerm)
-  );
+  const filteredData = data.filter((item) => {
+    const matchesSearch = item.mobile.includes(searchTerm);
+
+    // dateFilter is a "YYYY-MM-DD" string from the <input type="date" />
+    let matchesDate = true;
+    if (dateFilter && item.timestamp?.toDate) {
+      const itemDate = item.timestamp.toDate();
+      const itemDateStr = `${itemDate.getFullYear()}-${String(itemDate.getMonth() + 1).padStart(2, '0')}-${String(itemDate.getDate()).padStart(2, '0')}`;
+      matchesDate = itemDateStr === dateFilter;
+    }
+
+    return matchesSearch && matchesDate;
+  });
 
   // Small helper to build a consistent avatar initial badge
   const getInitial = (name) => (name ? name.trim().charAt(0).toUpperCase() : '?');
+
+  // Exports the currently filtered records to a downloadable Excel (.xlsx) file
+  const handleExportExcel = () => {
+    if (filteredData.length === 0) {
+      toast.error('No records to export');
+      return;
+    }
+
+    const rows = filteredData.map((record) => {
+      const { date, time } = formatDateTime(record.timestamp);
+      return {
+        Name: record.name || '',
+        'Mobile Number': record.mobile || '',
+        'Parlour Name': record.parlour || '',
+        City: record.city || '',
+        Date: date,
+        Time: time,
+      };
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(rows);
+    // Reasonable column widths so the sheet is readable out of the box
+    worksheet['!cols'] = [
+      { wch: 22 }, // Name
+      { wch: 16 }, // Mobile Number
+      { wch: 30 }, // Parlour Name
+      { wch: 18 }, // City
+      { wch: 14 }, // Date
+      { wch: 12 }, // Time
+    ];
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Registrations');
+
+    const fileDate = new Date().toISOString().slice(0, 10);
+    XLSX.writeFile(workbook, `Registrations_${fileDate}.xlsx`);
+    toast.success('Excel file downloaded');
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors p-4 sm:p-8">
@@ -111,6 +161,14 @@ const AdminDashboard = () => {
 
           <div className="flex items-center gap-3 w-full sm:w-auto">
             <ThemeToggle />
+            <button
+              onClick={handleExportExcel}
+              className="flex items-center gap-2 bg-brand-pink text-white px-4 py-2.5 rounded-xl hover:bg-brand-pink/90 active:scale-95 transition-all font-medium text-sm shadow-sm shadow-brand-pink/30"
+            >
+              <Download size={16} />
+              <span className="hidden sm:inline">Export Excel</span>
+              <span className="sm:hidden">Export</span>
+            </button>
             <button
               onClick={handleLogout}
               className="flex items-center gap-2 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-4 py-2.5 rounded-xl hover:bg-slate-300 dark:hover:bg-slate-700 active:scale-95 transition-all font-medium text-sm"
@@ -150,23 +208,57 @@ const AdminDashboard = () => {
         {/* Table card */}
         <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-700 overflow-hidden">
           <div className="p-6 border-b border-slate-100 dark:border-slate-700">
-            <div className="relative max-w-md">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                <Search className="h-4.5 w-4.5 text-slate-400" />
+            <div className="flex flex-col sm:flex-row gap-3">
+              <div className="relative flex-1 max-w-md">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                  <Search className="h-4.5 w-4.5 text-slate-400" />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search by mobile number..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-10 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-brand-pink/50 focus:border-brand-pink outline-none transition-all dark:text-white text-sm"
+                />
+                {searchTerm && (
+                  <button
+                    onClick={() => setSearchTerm('')}
+                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                )}
               </div>
-              <input
-                type="text"
-                placeholder="Search by mobile number..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-10 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-brand-pink/50 focus:border-brand-pink outline-none transition-all dark:text-white text-sm"
-              />
-              {searchTerm && (
+
+              <div className="relative sm:w-56">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                  <CalendarDays className="h-4.5 w-4.5 text-slate-400" />
+                </div>
+                <input
+                  type="date"
+                  value={dateFilter}
+                  onChange={(e) => setDateFilter(e.target.value)}
+                  className="w-full pl-10 pr-9 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-brand-pink/50 focus:border-brand-pink outline-none transition-all dark:text-white text-sm [color-scheme:light] dark:[color-scheme:dark]"
+                />
+                {dateFilter && (
+                  <button
+                    onClick={() => setDateFilter('')}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                )}
+              </div>
+
+              {(searchTerm || dateFilter) && (
                 <button
-                  onClick={() => setSearchTerm('')}
-                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+                  onClick={() => {
+                    setSearchTerm('');
+                    setDateFilter('');
+                  }}
+                  className="text-sm font-medium text-brand-pink hover:underline whitespace-nowrap self-center sm:self-auto"
                 >
-                  <X className="h-4 w-4" />
+                  Clear filters
                 </button>
               )}
             </div>
@@ -185,7 +277,9 @@ const AdminDashboard = () => {
                 </div>
                 <p className="text-slate-600 dark:text-slate-300 font-medium">No records found</p>
                 <p className="text-sm text-slate-400 dark:text-slate-500">
-                  {searchTerm ? 'Try a different mobile number' : 'Registrations will appear here'}
+                  {searchTerm || dateFilter
+                    ? 'Try a different mobile number or date'
+                    : 'Registrations will appear here'}
                 </p>
               </div>
             ) : (
