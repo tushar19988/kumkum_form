@@ -4,6 +4,9 @@ import { User, Phone, MapPin, Building2 } from 'lucide-react';
 import InputField from './InputField';
 import SubmitButton from './SubmitButton';
 import BeautyLogo from './BeautyLogo';
+import { db } from '../utils/firebase';
+import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import toast from 'react-hot-toast';
 
 const FormCard = () => {
   const [formData, setFormData] = useState({
@@ -26,14 +29,50 @@ const FormCard = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Basic validation for mobile number
+    if (formData.mobile.length !== 10) {
+      toast.error("Please enter a valid 10-digit mobile number.");
+      return;
+    }
+
     setIsSubmitting(true);
     
-    // As per request, do nothing on submit for now
-    setTimeout(() => {
+    try {
+      const docRef = doc(db, "registrations", formData.mobile);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        toast.error("This mobile number is already registered.");
+      } else {
+        await setDoc(docRef, {
+          name: formData.name,
+          mobile: formData.mobile,
+          parlour: formData.parlour,
+          city: formData.city,
+          timestamp: serverTimestamp()
+        });
+        
+        console.log("Document written with ID: ", formData.mobile);
+        
+        // Reset form after successful submission
+        setFormData({
+          name: '',
+          mobile: '',
+          parlour: '',
+          city: ''
+        });
+        
+        toast.success("Registration successful!");
+      }
+    } catch (error) {
+      console.error("Error adding document: ", error);
+      toast.error("Failed to submit. Please try again.");
+    } finally {
       setIsSubmitting(false);
-    }, 1000);
+    }
   };
 
   return (
