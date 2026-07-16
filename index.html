@@ -1,63 +1,75 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="./favicon-new.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" media="print" onload="this.media='all'">
-    <noscript>
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
-    </noscript>
-    <title>Kumkum Beauty Care</title>
-  </head>
-  <body>
-    <style>
-      body { 
-        margin: 0; 
-        background-color: #f8fafc;
-        background-image: radial-gradient(ellipse at top, rgba(251, 207, 232, 0.4), #f8fafc, #f8fafc);
-        background-attachment: fixed;
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="./favicon-new.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+    media="print" onload="this.media='all'">
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+  </noscript>
+  <title>Kumkum Beauty Expo</title>
+</head>
+
+<body>
+  <style>
+    body {
+      margin: 0;
+      background-color: #f8fafc;
+      background-image: radial-gradient(ellipse at top, rgba(251, 207, 232, 0.4), #f8fafc, #f8fafc);
+      background-attachment: fixed;
+    }
+
+    .initial-loader {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      width: 100%;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    .spinner {
+      height: 48px;
+      width: 48px;
+      border: 4px solid rgba(244, 114, 182, 0.2);
+      border-top-color: #f472b6;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      box-shadow: 0 0 20px rgba(244, 114, 182, 0.2);
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
       }
-      .initial-loader {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        width: 100%;
-        font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: #0f172a;
+        background-image: radial-gradient(ellipse at top, rgba(244, 114, 182, 0.15), #0f172a, #0f172a);
       }
+
       .spinner {
-        height: 48px;
-        width: 48px;
-        border: 4px solid rgba(244, 114, 182, 0.2);
+        border: 4px solid rgba(244, 114, 182, 0.1);
         border-top-color: #f472b6;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-        box-shadow: 0 0 20px rgba(244, 114, 182, 0.2);
       }
-      @keyframes spin {
-        to { transform: rotate(360deg); }
-      }
-      @media (prefers-color-scheme: dark) {
-        body { 
-          background-color: #0f172a; 
-          background-image: radial-gradient(ellipse at top, rgba(244, 114, 182, 0.15), #0f172a, #0f172a);
-        }
-        .spinner {
-          border: 4px solid rgba(244, 114, 182, 0.1);
-          border-top-color: #f472b6;
-        }
-      }
-    </style>
-    <div id="root">
-      <div class="initial-loader">
-        <div class="spinner"></div>
-      </div>
+    }
+  </style>
+  <div id="root">
+    <div class="initial-loader">
+      <div class="spinner"></div>
     </div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+  </div>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+
 </html>

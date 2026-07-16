@@ -19,7 +19,7 @@ const FormCard = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
+
     if (name === 'mobile') {
       // Only allow numbers and limit to 10 digits
       const numericValue = value.replace(/\D/g, '').slice(0, 10);
@@ -31,7 +31,7 @@ const FormCard = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Basic validation for mobile number
     if (formData.mobile.length !== 10) {
       toast.error("Please enter a valid 10-digit mobile number.");
@@ -39,7 +39,7 @@ const FormCard = () => {
     }
 
     setIsSubmitting(true);
-    
+
     try {
       const docRef = doc(db, "registrations", formData.mobile);
       const docSnap = await getDoc(docRef);
@@ -54,9 +54,9 @@ const FormCard = () => {
           city: formData.city,
           timestamp: serverTimestamp()
         });
-        
+
         console.log("Document written with ID: ", formData.mobile);
-        
+
         // Reset form after successful submission
         setFormData({
           name: '',
@@ -64,7 +64,7 @@ const FormCard = () => {
           parlour: '',
           city: ''
         });
-        
+
         toast.success("Registration successful!");
       }
     } catch (error) {
@@ -90,7 +90,7 @@ const FormCard = () => {
         <div className="text-center mb-10">
           <BeautyLogo className="w-20 h-20 mx-auto mb-4" />
           <h1 className="text-2xl sm:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-brand-pink to-brand-gold mb-2">
-            Kumkum Beauty Care
+            Kumkum Beauty Expo
           </h1>
           <p className="text-slate-600 dark:text-slate-400 font-medium">
             Welcome! Please fill your details.
