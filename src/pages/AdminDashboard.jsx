@@ -116,7 +116,7 @@ const AdminDashboard = () => {
       const rows = filteredData.map((record, index) => {
         const { date, time } = formatDateTime(record.timestamp);
         return {
-          'S.No.': index + 1,
+          'S.No.': filteredData.length - index,
           Name: record.name || '',
           'Mobile Number': record.mobile || '',
           'Parlour Name': record.parlour || '',
@@ -324,7 +324,7 @@ const AdminDashboard = () => {
                         <tr key={record.id} className="hover:bg-slate-50/60 dark:hover:bg-slate-700/20 transition-colors">
                           <td className="p-4 px-6">
                             <span className="inline-flex items-center justify-center h-7 w-7 rounded-full bg-slate-100 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 text-xs font-semibold">
-                              {index + 1}
+                              {filteredData.length - index}
                             </span>
                           </td>
                           <td className="p-4 px-6">
@@ -370,7 +370,7 @@ const AdminDashboard = () => {
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex items-center gap-3 min-w-0">
                           <div className="h-8 w-8 rounded-full bg-slate-100 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 flex items-center justify-center text-xs font-bold shrink-0">
-                            {index + 1}
+                            {filteredData.length - index}
                           </div>
                           <div className="min-w-0">
                             <p className="text-slate-800 dark:text-slate-200 font-semibold text-sm truncate">
