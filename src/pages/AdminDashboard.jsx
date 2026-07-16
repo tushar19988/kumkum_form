@@ -97,8 +97,6 @@ const AdminDashboard = () => {
     return matchesSearch && matchesDate;
   });
 
-  // Small helper to build a consistent avatar initial badge
-  const getInitial = (name) => (name ? name.trim().charAt(0).toUpperCase() : '?');
 
   // Exports the currently filtered records to a downloadable Excel (.xlsx) file
   const handleExportExcel = async () => {
@@ -318,14 +316,9 @@ const AdminDashboard = () => {
                             </span>
                           </td>
                           <td className="p-4 px-6">
-                            <div className="flex items-center gap-3">
-                              <div className="h-9 w-9 rounded-full bg-brand-pink/10 text-brand-pink flex items-center justify-center text-sm font-semibold shrink-0">
-                                {getInitial(record.name)}
-                              </div>
-                              <span className="text-slate-800 dark:text-slate-200 font-medium">
-                                {record.name}
-                              </span>
-                            </div>
+                            <span className="text-slate-800 dark:text-slate-200 font-medium">
+                              {record.name}
+                            </span>
                           </td>
                           <td className="p-4 px-6 text-slate-600 dark:text-slate-400 whitespace-nowrap">
                             {record.mobile}
@@ -354,6 +347,7 @@ const AdminDashboard = () => {
               </div>
 
               {/* Mobile: card view (below sm) */}
+              {/* Mobile: card view (below sm) */}
               <div className="sm:hidden p-3 space-y-3 bg-slate-50 dark:bg-slate-900/50">
                 {filteredData.map((record, index) => {
                   const { date, time } = formatDateTime(record.timestamp);
@@ -362,32 +356,22 @@ const AdminDashboard = () => {
                       key={record.id}
                       className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm p-4 active:scale-[0.99] transition-transform"
                     >
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex items-center gap-3 min-w-0">
-                          <div className="h-11 w-11 rounded-full bg-brand-pink/10 text-brand-pink flex items-center justify-center text-base font-semibold shrink-0">
-                            {getInitial(record.name)}
-                          </div>
-                          <div className="min-w-0">
-                            <p className="text-slate-800 dark:text-slate-200 font-semibold text-sm truncate">
-                              {record.name}
-                            </p>
-                            <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5">
-                              {record.mobile}
-                            </p>
-                          </div>
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="h-8 w-8 rounded-full bg-slate-100 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 flex items-center justify-center text-xs font-bold shrink-0">
+                          {index + 1}
                         </div>
-                        <div className="text-right shrink-0">
-                          <div className="text-xs font-medium text-slate-700 dark:text-slate-300 whitespace-nowrap">
-                            {date}
-                          </div>
-                          <div className="text-[11px] text-slate-400 dark:text-slate-500 whitespace-nowrap">
-                            {time}
-                          </div>
+                        <div className="min-w-0">
+                          <p className="text-slate-800 dark:text-slate-200 font-semibold text-sm truncate">
+                            {record.name}
+                          </p>
+                          <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5">
+                            {record.mobile}
+                          </p>
                         </div>
                       </div>
 
                       {(record.parlour || record.city) && (
-                        <div className="flex flex-wrap gap-2 mt-3 pl-[56px]">
+                        <div className="flex flex-wrap gap-2 mt-3 pl-[44px]">
                           {record.parlour && (
                             <span className="max-w-full px-2.5 py-1.5 rounded-lg text-xs font-medium bg-brand-pink/10 text-brand-pink break-all whitespace-normal leading-relaxed">
                               {record.parlour}
