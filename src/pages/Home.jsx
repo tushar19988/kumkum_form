@@ -22,7 +22,7 @@ const Home = () => {
         >
           <p className="text-sm text-slate-500 dark:text-slate-400 max-w-sm mx-auto bg-white/40 dark:bg-slate-900/40 backdrop-blur-sm p-3 rounded-xl border border-white/10">
             🔒 Your information is secure and only shared with
-            <span className="font-semibold text-brand-pink dark:text-brand-pink-light"> Kumkum Beauty Expo</span>.
+            <span className="font-semibold text-brand-pink dark:text-brand-pink-light"> Beauty Expo</span>.
           </p>
         </motion.div>
       </div>

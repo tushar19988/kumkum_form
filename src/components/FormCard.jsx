@@ -90,7 +90,7 @@ const FormCard = () => {
         <div className="text-center mb-10">
           <BeautyLogo className="w-20 h-20 mx-auto mb-4" />
           <h1 className="text-2xl sm:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-brand-pink to-brand-gold mb-2">
-            Kumkum Beauty Expo
+            Beauty Expo
           </h1>
           <p className="text-slate-600 dark:text-slate-400 font-medium">
             Welcome! Please fill your details.

@@ -13,6 +13,7 @@ const AdminDashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [dateFilter, setDateFilter] = useState('');
   const [loading, setLoading] = useState(true);
+  const [authChecking, setAuthChecking] = useState(true);
   const [userName, setUserName] = useState('');
   const navigate = useNavigate();
 
@@ -26,6 +27,7 @@ const AdminDashboard = () => {
         const name = user.displayName || (user.email ? user.email.split('@')[0] : 'Admin');
         setUserName(name);
         fetchData();
+        setAuthChecking(false);
       }
     });
     return () => unsubscribe();
@@ -84,7 +86,8 @@ const AdminDashboard = () => {
   };
 
   const filteredData = data.filter((item) => {
-    const matchesSearch = item.mobile.includes(searchTerm);
+    const mobile = item.mobile ? String(item.mobile) : '';
+    const matchesSearch = mobile.includes(searchTerm);
 
     // dateFilter is a "YYYY-MM-DD" string from the <input type="date" />
     let matchesDate = true;
@@ -146,6 +149,15 @@ const AdminDashboard = () => {
       toast.error('Failed to create Excel file', { id: toastId });
     }
   };
+
+  if (authChecking) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-900 gap-4">
+        <div className="h-10 w-10 border-4 border-brand-pink border-t-transparent rounded-full animate-spin"></div>
+        <p className="text-slate-500 font-medium">Verifying session...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors p-4 sm:p-8">
@@ -347,7 +359,6 @@ const AdminDashboard = () => {
               </div>
 
               {/* Mobile: card view (below sm) */}
-              {/* Mobile: card view (below sm) */}
               <div className="sm:hidden p-3 space-y-3 bg-slate-50 dark:bg-slate-900/50">
                 {filteredData.map((record, index) => {
                   const { date, time } = formatDateTime(record.timestamp);
@@ -356,17 +367,27 @@ const AdminDashboard = () => {
                       key={record.id}
                       className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm p-4 active:scale-[0.99] transition-transform"
                     >
-                      <div className="flex items-center gap-3 min-w-0">
-                        <div className="h-8 w-8 rounded-full bg-slate-100 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 flex items-center justify-center text-xs font-bold shrink-0">
-                          {index + 1}
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="h-8 w-8 rounded-full bg-slate-100 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 flex items-center justify-center text-xs font-bold shrink-0">
+                            {index + 1}
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-slate-800 dark:text-slate-200 font-semibold text-sm truncate">
+                              {record.name}
+                            </p>
+                            <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5">
+                              {record.mobile}
+                            </p>
+                          </div>
                         </div>
-                        <div className="min-w-0">
-                          <p className="text-slate-800 dark:text-slate-200 font-semibold text-sm truncate">
-                            {record.name}
-                          </p>
-                          <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5">
-                            {record.mobile}
-                          </p>
+                        <div className="text-right shrink-0">
+                          <div className="text-xs font-medium text-slate-700 dark:text-slate-300 whitespace-nowrap">
+                            {date}
+                          </div>
+                          <div className="text-[11px] text-slate-400 dark:text-slate-500 whitespace-nowrap">
+                            {time}
+                          </div>
                         </div>
                       </div>
 
