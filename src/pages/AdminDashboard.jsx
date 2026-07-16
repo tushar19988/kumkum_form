@@ -106,15 +106,16 @@ const AdminDashboard = () => {
       toast.error('No records to export');
       return;
     }
-    
+
     const toastId = toast.loading('Preparing Excel file...');
     try {
       // Dynamically import xlsx so it doesn't block initial page load (fixes Mobile PageSpeed 0 score)
       const XLSX = await import('xlsx');
 
-      const rows = filteredData.map((record) => {
+      const rows = filteredData.map((record, index) => {
         const { date, time } = formatDateTime(record.timestamp);
         return {
+          'S.No.': index + 1,
           Name: record.name || '',
           'Mobile Number': record.mobile || '',
           'Parlour Name': record.parlour || '',
@@ -127,6 +128,7 @@ const AdminDashboard = () => {
       const worksheet = XLSX.utils.json_to_sheet(rows);
       // Reasonable column widths so the sheet is readable out of the box
       worksheet['!cols'] = [
+        { wch: 8 },  // S.No.
         { wch: 22 }, // Name
         { wch: 16 }, // Mobile Number
         { wch: 30 }, // Parlour Name
@@ -297,6 +299,7 @@ const AdminDashboard = () => {
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="bg-slate-50 dark:bg-slate-900/50 text-slate-500 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">
+                      <th className="p-4 px-6 w-16">S.No.</th>
                       <th className="p-4 px-6">Name</th>
                       <th className="p-4 px-6">Mobile Number</th>
                       <th className="p-4 px-6">Parlour Name</th>
@@ -305,10 +308,15 @@ const AdminDashboard = () => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50">
-                    {filteredData.map((record) => {
+                    {filteredData.map((record, index) => {
                       const { date, time } = formatDateTime(record.timestamp);
                       return (
                         <tr key={record.id} className="hover:bg-slate-50/60 dark:hover:bg-slate-700/20 transition-colors">
+                          <td className="p-4 px-6">
+                            <span className="inline-flex items-center justify-center h-7 w-7 rounded-full bg-slate-100 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 text-xs font-semibold">
+                              {index + 1}
+                            </span>
+                          </td>
                           <td className="p-4 px-6">
                             <div className="flex items-center gap-3">
                               <div className="h-9 w-9 rounded-full bg-brand-pink/10 text-brand-pink flex items-center justify-center text-sm font-semibold shrink-0">
@@ -346,17 +354,17 @@ const AdminDashboard = () => {
               </div>
 
               {/* Mobile: card view (below sm) */}
-              <div className="sm:hidden divide-y divide-slate-100 dark:divide-slate-700/50">
-                {filteredData.map((record) => {
+              <div className="sm:hidden p-3 space-y-3 bg-slate-50 dark:bg-slate-900/50">
+                {filteredData.map((record, index) => {
                   const { date, time } = formatDateTime(record.timestamp);
                   return (
                     <div
                       key={record.id}
-                      className="p-4 active:bg-slate-50 dark:active:bg-slate-700/20 transition-colors"
+                      className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm p-4 active:scale-[0.99] transition-transform"
                     >
-                      <div className="flex items-start justify-between gap-2 min-w-0">
+                      <div className="flex items-start justify-between gap-3">
                         <div className="flex items-center gap-3 min-w-0">
-                          <div className="h-10 w-10 rounded-full bg-brand-pink/10 text-brand-pink flex items-center justify-center text-sm font-semibold shrink-0">
+                          <div className="h-11 w-11 rounded-full bg-brand-pink/10 text-brand-pink flex items-center justify-center text-base font-semibold shrink-0">
                             {getInitial(record.name)}
                           </div>
                           <div className="min-w-0">
@@ -378,22 +386,20 @@ const AdminDashboard = () => {
                         </div>
                       </div>
 
-                      <div className="flex flex-col gap-2 mt-3 pl-[52px] min-w-0">
-                        {record.parlour && (
-                          <div className="min-w-0">
-                            <span className="inline-block max-w-full w-fit px-2.5 py-1.5 rounded-lg text-xs font-medium bg-brand-pink/10 text-brand-pink break-all leading-relaxed">
+                      {(record.parlour || record.city) && (
+                        <div className="flex flex-wrap gap-2 mt-3 pl-[56px]">
+                          {record.parlour && (
+                            <span className="max-w-full px-2.5 py-1.5 rounded-lg text-xs font-medium bg-brand-pink/10 text-brand-pink break-all whitespace-normal leading-relaxed">
                               {record.parlour}
                             </span>
-                          </div>
-                        )}
-                        {record.city && (
-                          <div className="min-w-0">
-                            <span className="inline-block max-w-full w-fit px-2.5 py-1.5 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300 break-words">
+                          )}
+                          {record.city && (
+                            <span className="max-w-full px-2.5 py-1.5 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300 break-words whitespace-normal">
                               {record.city}
                             </span>
-                          </div>
-                        )}
-                      </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   );
                 })}
